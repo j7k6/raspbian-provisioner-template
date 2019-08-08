@@ -1,0 +1,45 @@
+{
+  "builders": [
+    {
+      "type": "vagrant",
+      "communicator": "ssh",
+      "provider": "virtualbox",
+      "add_force": true,
+      "source_path": "debian/buster64",
+      "template": "Vagrantfile"
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "ansible-local",
+      "playbook_file": "playbook.yml",
+      "inventory_file": "qemu.yml",
+      "extra_arguments": "-vvvvv"
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "cleanup.yml",
+      "inventory_file": "qemu.yml",
+      "extra_arguments": "-vvvvv"
+    },
+    {
+      "type": "file",
+      "source": "/tmp/raspbian-provisioned.img",
+      "destination": "./raspbian-provisioned.img",
+      "direction": "download"
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo killall qemu-system-arm",
+        "sudo rm -rf /tmp/*"
+      ]
+    }
+  ],
+  "post-processors": [
+    {
+      "type": "shell-local",
+      "inline": ["rm -rf output-vagrant"]
+    }
+  ]
+}
