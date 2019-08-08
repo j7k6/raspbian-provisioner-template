@@ -1,5 +1,6 @@
 *.tmp
 *.sw[op]
 *.retry
-*.img
-output-vagrant
+.vagrant/
+build/
+dist/
